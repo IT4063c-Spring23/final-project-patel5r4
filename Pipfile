@@ -22,6 +22,11 @@ ipywidgets = "*"
 bokeh = "*"
 scipy = "*"
 scikit-learn = "*"
+PyPDF2 = "*"
+pandas_highcharts = "*"
+tabula = "*"
+camelot = "*"
+PyMuPDF = "*"
 
 [dev-packages]
 ipykernel = "*"
