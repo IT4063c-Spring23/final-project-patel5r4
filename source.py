@@ -55,7 +55,7 @@
 # These sources have data about crashes, deaths and rollovers. These can be merged together - for example, total crashes and rollover by vehicle type will show what type of vehicle is most likely to rollover and if the SUV rollover rates are really declining. 
 # 
 
-# In[121]:
+# In[1]:
 
 
 # Start your code here 
@@ -76,11 +76,13 @@ import tabula
 
 from IPython.display import IFrame
 from bs4 import BeautifulSoup
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 
 # - #### <b>Dataframe (occupants_df) - passenger vehicle <span style='background:green'>occupant</span> deaths by vehicle type, 1975-2020</b>
 
-# In[78]:
+# In[2]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -96,7 +98,7 @@ occupants_df.head()
 
 # - #### <b>Bar chart - passenger vehicle <span style='background:green'>occupant</span> deaths by vehicle type, 1975-2020</b>
 
-# In[92]:
+# In[3]:
 
 
 fig = px.bar(occupants_df, x='Year', y=occupants_df.drop(columns=['Year']).columns)
@@ -105,7 +107,7 @@ fig.show()
 
 # - #### <b>Line chart - passenger vehicle <span style='background:green'>occupant</span> deaths by vehicle type, 1975-2020</b>
 
-# In[109]:
+# In[4]:
 
 
 fig = px.line(occupants_df, x='Year', y=occupants_df.drop(columns=['Year']).columns)
@@ -114,7 +116,7 @@ fig.show()
 
 # - #### <b>Dataframe (drivers_df) - passenger vehicle <span style='background:green'>driver</span> deaths by vehicle type, 1975-2020</b>
 
-# In[79]:
+# In[5]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -130,7 +132,7 @@ drivers_df.head()
 
 # - #### <b>Bar chart - passenger vehicle <span style='background:green'>driver</span> deaths by vehicle type, 1975-2020</b>
 
-# In[93]:
+# In[6]:
 
 
 fig = px.bar(drivers_df, x='Year', y=drivers_df.drop(columns=['Year']).columns)
@@ -139,7 +141,7 @@ fig.show()
 
 # - #### <b>Line chart - passenger vehicle <span style='background:green'>driver</span> deaths by vehicle type, 1975-2020</b>
 
-# In[108]:
+# In[7]:
 
 
 fig = px.line(drivers_df, x='Year', y=drivers_df.drop(columns=['Year']).columns)
@@ -148,7 +150,7 @@ fig.show()
 
 # - #### <b>Dataframe (rollover_df) - Passenger vehicles involved in fatal crashes by year and vehicle body type </b>
 
-# In[5]:
+# In[8]:
 
 
 rollover_df = pd.read_csv(r'data\Passenger Vehicles Involved in Rollover Crashes (percent value).csv')
@@ -157,7 +159,7 @@ display(rollover_df)
 
 # - #### <b>Bar chart - Passenger vehicles involved in fatal crashes by year and vehicle body type </b>
 
-# In[77]:
+# In[9]:
 
 
 fig = px.bar(rollover_df, x=rollover_df['Year'], y=rollover_df.drop(columns=['Year']).columns, barmode = 'group')
@@ -166,7 +168,7 @@ fig.show()
 
 # - #### <b>Dataframe (drivers_df2) - Driver deaths per million registered passenger vehicles 1-3 years old by vehicle size, 2020</b>
 
-# In[42]:
+# In[10]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -182,7 +184,7 @@ display(drivers_df2)
 
 # - #### <b>Heatmap - Fatality Rates for Passenger Vehicle Occupants </b>
 
-# In[43]:
+# In[11]:
 
 
 pivot_df = drivers_df2.pivot(index='Body Type', columns='Size', values='Rate')
@@ -195,7 +197,7 @@ plt.show()
 
 # - #### <b>Dataframe (drivers_df3) - <span style='background:green'>Driver</span> deaths per million registered passenger vehicles 1-3 years old, 1978-2020</b>
 
-# In[80]:
+# In[12]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -216,7 +218,7 @@ drivers_df3.head()
 
 # - #### <b>Stacked area chart - <span style='background:green'>Driver</span> deaths per million registered passenger vehicles 1-3 years old, 1978-2020</b>
 
-# In[71]:
+# In[13]:
 
 
 fig = px.area(drivers_df3, x=drivers_df3['Year'], y=drivers_df3.drop(columns=['Year']).columns)
@@ -225,7 +227,7 @@ fig.show()
 
 # - #### <b>Dataframe (occupants_df2) - <span style='background:green'>All occupants</span> deaths per million registered passenger vehicles 1-3 years old, 1978-2020</b>
 
-# In[183]:
+# In[14]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -246,7 +248,7 @@ occupants_df2.head()
 
 # - #### <b>Stacked area chart - <span style='background:green'>All occupants</span> deaths per million registered passenger vehicles 1-3 years old, 1978-2020</b>
 
-# In[184]:
+# In[15]:
 
 
 fig = px.area(occupants_df2, x=occupants_df2['Year'], y=occupants_df2.drop(columns=['Year']).columns)
@@ -255,7 +257,7 @@ fig.show()
 
 # - #### <b>Dataframe (crash_df) - Vehicle Involvement in Fatal Crashes - Rate per 100,000 Registered Vehicles By Year and Body Type of Vehicle. Here 'light trucks' includes SUVs, pickups, and vans </b>
 
-# In[127]:
+# In[16]:
 
 
 crash_df = pd.read_csv(r'data\Vehicle Involvement in Fatal Crashes - Rate per 100,000 Registered Vehicles By Year and Body Type of Vehicle .csv')
@@ -276,16 +278,21 @@ crash_df.head()
 
 # - #### <b>Bar chart - Vehicle Involvement in Fatal Crashes - Rate per 100,000 Registered Vehicles By Year and Body Type of Vehicle. Here 'light trucks' includes SUVs, pickups, and vans </b>
 
-# In[128]:
+# In[18]:
 
 
-# Needs corrections 
-ax = crash_df.plot.bar(x='Year', y=crash_df.drop(columns=['Year']).columns, rot=0)
+ax = crash_df.plot.bar(x='Year', y=[
+    'Registered (pass cars)',
+    'Registered (light trucks)', 
+    'Involved (pass cars)',
+    'Involved (light trucks)'
+], rot=0)
+ax.set_yscale('log')
 
 
 # - #### <b>Dataframe (speeding_df) - Fatal rollovers by relative speed, year 2000 </b>
 
-# In[173]:
+# In[19]:
 
 
 speeding_df = pd.read_csv(r'data\Fatal Rollovers by Relative Speed.csv')
@@ -295,7 +302,7 @@ speeding_df.head()
 
 # - #### <b>Bar chart - Fatal rollovers by relative speed, year 2000</b>
 
-# In[176]:
+# In[20]:
 
 
 speeding_df = speeding_df.set_index(pd.Index(['Speeding', 'Not Speeding']))
@@ -305,7 +312,7 @@ fig.show()
 
 # - #### <b>Dataframe (rollover_df2) - Passenger vehicle occupant deaths in rollover crashes by impact point and vehicle type, 2020 </b>
 
-# In[263]:
+# In[21]:
 
 
 url = 'https://iihs.org/topics/fatality-statistics/detail/passenger-vehicle-occupants?_gl=1'             
@@ -329,14 +336,80 @@ rollover_df2.head(10)
 
 # - #### <b>Scatter plot - Passenger vehicle occupant deaths in rollover crashes by impact point and vehicle type, 2020</b>
 
-# In[269]:
+# In[45]:
 
-
-# Needs corrections
 
 for col in rollover_df2.columns[1:]:
     fig = px.scatter(rollover_df2, x='Point of initial impact', y=col, color='Point of initial impact')
+    fig.update_yaxes(tick0=0)
+
     fig.show()
+
+
+# - #### <b>Linear Regression Model: Registered vs Involved Passenger Cars</b>
+
+# In[39]:
+
+
+model_cars = LinearRegression()
+model_cars.fit(crash_df[['Registered (pass cars)']], crash_df['Involved (pass cars)'])
+# print(model_cars.coef_)
+# print(model_cars.intercept_)
+print(model_cars.predict([[500380030]]))
+# model_cars.score(crash_df[['Registered (pass cars)']], crash_df['Involved (pass cars)'])
+
+
+# - #### <b>Plotting the trained model- Linear Regression Model: Registered vs Involved Passenger Cars</b>
+
+# In[48]:
+
+
+x1 = np.linspace(
+    crash_df['Registered (pass cars)'].min(),
+    crash_df['Registered (pass cars)'].max(),
+    4
+)
+x1_reshaped = x1.reshape(-1, 1)
+print(x1_reshaped)
+y1 = model_cars.predict(x1_reshaped)
+y1
+
+plt.scatter(crash_df['Registered (pass cars)'], crash_df['Involved (pass cars)'],c='red')
+plt.plot(x1, y1)
+plt.show()
+
+
+# - #### <b>Linear Regression Model: Registered vs Involved Light Trucks</b>
+
+# In[43]:
+
+
+model_trucks = LinearRegression()
+model_trucks.fit(crash_df[['Registered (light trucks)']], crash_df['Involved (light trucks)'])
+# print(model_trucks.coef_)
+# print(model_trucks.intercept_)
+print(model_trucks.predict([[40000]]))
+# model_trucks.score(crash_df[['Registered (light trucks)']], crash_df['Involved (light trucks)'])
+
+
+# - #### <b>Plotting the trained model- Linear Regression Model: Registered vs Involved Passenger Cars</b>
+
+# In[49]:
+
+
+x1 = np.linspace(
+    crash_df['Registered (light trucks)'].min(),
+    crash_df['Registered (light trucks)'].max(),
+    4
+)
+x1_reshaped = x1.reshape(-1, 1)
+print(x1_reshaped)
+y1 = model_trucks.predict(x1_reshaped)
+y1
+
+plt.scatter(crash_df['Registered (light trucks)'], crash_df['Involved (light trucks)'],c='red')
+plt.plot(x1, y1)
+plt.show()
 
 
 # ## Resources and References
@@ -346,7 +419,7 @@ for col in rollover_df2.columns[1:]:
 # 1. National Highway Traffic Safety Administration (NHTSA)
 # 2. Insurance Institute for Highway Safety (IIHS)
 
-# In[1]:
+# In[24]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
