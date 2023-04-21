@@ -13,13 +13,18 @@
 | Category          | Score    |
 | ----------------- | -------- |
 | **Setup**         | 10 / 10 |
-| **Execution**     | 17 / 20 | - This is because I couldn't figure out: How to set the y-axis to start from 0; the negative correlation with one of my linear regression models 
+| **Execution**     | 17 / 20 |  
 | **Documentation** | 10 / 10 |
-| **Presentation**  | 27 / 30 | - I think I did good at presenting overall (just not the best presenter in general!)
+| **Presentation**  | 27 / 30 | 
 | **Total**         | 64 / 70 |
 
 ### Reflection
 <!-- Edit the following section with your reflection -->
+
+- Self Assessment Comments:
+- Execution 17/20 - This is because I couldn't figure out: How to set the y-axis to start from 0 in one of the visualizations; the negative correlation with one of my linear regression models
+- Presentation 27/30 - I think I did good at presenting overall (just not the best presenter in general!)
+
 
 #### What went well?
 - The visualizations part went really well for me. Also, the linear regression models as I was able to predict values for one of them. Overall, I'm happy with my project!
